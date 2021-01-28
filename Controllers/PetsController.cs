@@ -195,7 +195,7 @@ namespace TamagotchiAPI.Controllers
         }
 
         [HttpPost("{id}/feedings")]
-        public async Task<ActionResult<Feeding>> FeedingsForPet(int id)
+        public async Task<ActionResult<Feeding>> FeedingForPet(int id)
         {
             var pet = await _context.Pets.FindAsync(id);
 
@@ -208,33 +208,35 @@ namespace TamagotchiAPI.Controllers
             feedings.PetId = pet.Id;
             feedings.When = DateTime.Now;
 
-            if (pet.HungerLevel >= 5)
-            {
-                pet.HungerLevel -= 5;
-            }
-            if (pet.HungerLevel == 4)
-            {
-                pet.HungerLevel -= 4;
-            }
-            if (pet.HungerLevel == 3)
-            {
-                pet.HungerLevel -= 3;
-            }
-            if (pet.HungerLevel == 2)
-            {
-                pet.HungerLevel -= 2;
-            }
-            if (pet.HungerLevel == 1)
-            {
-                pet.HungerLevel -= 1;
-            }
-
             pet.HappinessLevel += 3;
+            pet.HungerLevel -= 5;
 
             _context.Feedings.Add(feedings);
             await _context.SaveChangesAsync();
 
             return Ok(feedings);
         }
+        [HttpPost("{id}/scoldings")]
+        public async Task<ActionResult<Scolding>> ScoldingForPet(int id)
+        {
+            var pet = await _context.Pets.FindAsync(id);
+
+            if (pet == null)
+            {
+                return NotFound();
+            }
+
+            Scolding scoldings = new Scolding();
+            scoldings.PetId = pet.Id;
+            scoldings.When = DateTime.Now;
+
+            pet.HappinessLevel -= 5;
+
+            _context.Scoldings.Add(scoldings);
+            await _context.SaveChangesAsync();
+
+            return Ok(scoldings);
+        }
+
     }
 }
