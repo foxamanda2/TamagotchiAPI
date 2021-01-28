@@ -44,3 +44,24 @@
   - Id (int)
   - When (DateTime) default
   - PetId(int-foreign key to pet)
+
+## Alrogithm
+
+- Playtimes
+
+  - Find the pet by the Id number
+  - Add 5 points to the happiness level
+  - Add 3 points to hunger level
+  - New instance of playtime should be created
+
+- Feedings
+
+  - Find the pet by the Id number
+  - Add 3 points to the happiness level
+  - Subtract 5 points to hunger level
+  - New instance of feeding should be created
+
+- Scolding
+  - Find the pet by the Id number
+  - Subtract 5 points to the happiness level
+  - New instance of Scolding should be created
