@@ -35,7 +35,7 @@ namespace TamagotchiAPI.Controllers
         {
             // Uses the database context in `_context` to request all of the Pet, sort
             // them by row id and return them as a JSON array.
-            return await _context.Pet.OrderBy(row => row.Id).ToListAsync();
+            return await _context.Pets.OrderBy(row => row.Id).ToListAsync();
         }
 
         // GET: api/Pets/5
@@ -48,7 +48,7 @@ namespace TamagotchiAPI.Controllers
         public async Task<ActionResult<Pet>> GetPet(int id)
         {
             // Find the pet in the database using `FindAsync` to look it up by id
-            var pet = await _context.Pet.FindAsync(id);
+            var pet = await _context.Pets.FindAsync(id);
 
             // If we didn't find anything, we receive a `null` in return
             if (pet == null)
@@ -131,7 +131,7 @@ namespace TamagotchiAPI.Controllers
             pet.HungerLevel = 0;
 
 
-            _context.Pet.Add(pet);
+            _context.Pets.Add(pet);
             await _context.SaveChangesAsync();
 
             // Return a response that indicates the object was created (status code `201`) and some additional
@@ -149,7 +149,7 @@ namespace TamagotchiAPI.Controllers
         public async Task<IActionResult> DeletePet(int id)
         {
             // Find this pet by looking for the specific id
-            var pet = await _context.Pet.FindAsync(id);
+            var pet = await _context.Pets.FindAsync(id);
             if (pet == null)
             {
                 // There wasn't a pet with that id so return a `404` not found
@@ -157,7 +157,7 @@ namespace TamagotchiAPI.Controllers
             }
 
             // Tell the database we want to remove this record
-            _context.Pet.Remove(pet);
+            _context.Pets.Remove(pet);
 
             // Tell the database to perform the deletion
             await _context.SaveChangesAsync();
@@ -169,20 +169,72 @@ namespace TamagotchiAPI.Controllers
         // Private helper method that looks up an existing pet by the supplied id
         private bool PetExists(int id)
         {
-            return _context.Pet.Any(pet => pet.Id == id);
+            return _context.Pets.Any(pet => pet.Id == id);
         }
-        [HttpPut("{id}/{playtime}")]
-        public async Task<IActionResult> PlaytimePet(int id, Pet pet)
+        [HttpPost("{id}/playtimes")]
+        public async Task<ActionResult<Playtime>> PlaytimeForPet(int id)
         {
-            _context.Pet.Add(pet);
+            var pet = await _context.Pets.FindAsync(id);
+
+            if (pet == null)
+            {
+                return NotFound();
+            }
+
+            Playtime playtimes = new Playtime();
+            playtimes.PetId = pet.Id;
+            playtimes.When = DateTime.Now;
+
+            pet.HappinessLevel += 5;
+            pet.HungerLevel += 3;
+
+            _context.Playtimes.Add(playtimes);
             await _context.SaveChangesAsync();
 
-            // Return a response that indicates the object was created (status code `201`) and some additional
-            // headers with details of the newly created object.
-            return CreatedAtAction("GetPet", new { id = pet.Id }, pet);
-
+            return Ok(playtimes);
         }
 
+        [HttpPost("{id}/feedings")]
+        public async Task<ActionResult<Feeding>> FeedingsForPet(int id)
         {
+            var pet = await _context.Pets.FindAsync(id);
+
+            if (pet == null)
+            {
+                return NotFound();
+            }
+
+            Feeding feedings = new Feeding();
+            feedings.PetId = pet.Id;
+            feedings.When = DateTime.Now;
+
+            if (pet.HungerLevel >= 5)
+            {
+                pet.HungerLevel -= 5;
+            }
+            if (pet.HungerLevel == 4)
+            {
+                pet.HungerLevel -= 4;
+            }
+            if (pet.HungerLevel == 3)
+            {
+                pet.HungerLevel -= 3;
+            }
+            if (pet.HungerLevel == 2)
+            {
+                pet.HungerLevel -= 2;
+            }
+            if (pet.HungerLevel == 1)
+            {
+                pet.HungerLevel -= 1;
+            }
+
+            pet.HappinessLevel += 3;
+
+            _context.Feedings.Add(feedings);
+            await _context.SaveChangesAsync();
+
+            return Ok(feedings);
+        }
     }
 }

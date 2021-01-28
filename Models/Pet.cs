@@ -14,11 +14,11 @@ namespace TamagotchiAPI.Models
 
         public int HappinessLevel { get; set; } = 0;
 
-        public List<Playtimes> Playtimes { get; set; }
+        public List<Playtime> Playtimes { get; set; }
 
-        public List<Feedings> Feedings { get; set; }
+        public List<Feeding> Feedings { get; set; }
 
-        public List<Scoldings> Scoldings { get; set; }
+        public List<Scolding> Scoldings { get; set; }
 
     }
 }
