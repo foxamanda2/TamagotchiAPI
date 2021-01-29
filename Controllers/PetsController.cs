@@ -187,6 +187,7 @@ namespace TamagotchiAPI.Controllers
             if ((deathDate - pet.LastInteractedWithDate).TotalDays > 3)
             {
                 pet.IsDead = true;
+                await _context.SaveChangesAsync();
                 return Ok(new { Message = "Your pet is dead" });
             }
             else
@@ -221,6 +222,7 @@ namespace TamagotchiAPI.Controllers
             if ((deathDate - pet.LastInteractedWithDate).TotalDays > 3)
             {
                 pet.IsDead = true;
+                await _context.SaveChangesAsync();
                 return Ok(new { Message = "Your pet is dead" });
 
             }
@@ -255,6 +257,7 @@ namespace TamagotchiAPI.Controllers
             if ((deathDate - pet.LastInteractedWithDate).TotalDays > 3)
             {
                 pet.IsDead = true;
+                await _context.SaveChangesAsync();
                 return Ok(new { Message = "Your pet is dead" });
             }
             else
@@ -270,7 +273,6 @@ namespace TamagotchiAPI.Controllers
                 await _context.SaveChangesAsync();
                 return Ok(scoldings);
             }
-
 
         }
 
