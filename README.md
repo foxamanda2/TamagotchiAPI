@@ -52,16 +52,28 @@
   - Find the pet by the Id number
   - Add 5 points to the happiness level
   - Add 3 points to hunger level
-  - New instance of playtime should be created
+  - New list instance of playtime should be created
 
 - Feedings
 
   - Find the pet by the Id number
   - Add 3 points to the happiness level
   - Subtract 5 points to hunger level
-  - New instance of feeding should be created
+  - New list instance of feeding should be created
 
 - Scolding
+
   - Find the pet by the Id number
   - Subtract 5 points to the happiness level
-  - New instance of Scolding should be created
+  - New list instance of Scolding should be created
+
+- LastInteractedWith
+
+  - Default needs to be the IsDead false.
+  - Every time you interact with a pet the interaction needs to be updated
+  - Need to compare the LastInteractedDate to that same date, but 3 days later.
+  - If the Last interaction date is more than 3 days later mark IsDead as true.
+
+  - Put inside all get options that if the last interaction date is greater than 3 days mark IsDead= True;
+
+  - In order to test this data Set the interaction dates as 3 days ago.

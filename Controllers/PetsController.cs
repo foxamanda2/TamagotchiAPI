@@ -129,6 +129,8 @@ namespace TamagotchiAPI.Controllers
             pet.Birthday = DateTime.Now;
             pet.HappinessLevel = 0;
             pet.HungerLevel = 0;
+            pet.LastInteractedWithDate = DateTime.Today.AddDays(-4);
+            pet.IsDead = false;
 
 
             _context.Pets.Add(pet);
@@ -181,17 +183,28 @@ namespace TamagotchiAPI.Controllers
                 return NotFound();
             }
 
-            Playtime playtimes = new Playtime();
-            playtimes.PetId = pet.Id;
-            playtimes.When = DateTime.Now;
+            var deathDate = DateTime.Now;
+            if ((deathDate - pet.LastInteractedWithDate).TotalDays > 3)
+            {
+                pet.IsDead = true;
+                return Ok(new { Message = "Your pet is dead" });
+            }
+            else
+            {
+                pet.LastInteractedWithDate = DateTime.Now;
+                Playtime playtimes = new Playtime();
+                playtimes.PetId = pet.Id;
+                playtimes.When = DateTime.Now;
 
-            pet.HappinessLevel += 5;
-            pet.HungerLevel += 3;
+                pet.HappinessLevel += 5;
+                pet.HungerLevel += 3;
 
-            _context.Playtimes.Add(playtimes);
-            await _context.SaveChangesAsync();
 
-            return Ok(playtimes);
+                _context.Playtimes.Add(playtimes);
+                await _context.SaveChangesAsync();
+
+                return Ok(playtimes);
+            }
         }
 
         [HttpPost("{id}/feedings")]
@@ -204,17 +217,29 @@ namespace TamagotchiAPI.Controllers
                 return NotFound();
             }
 
-            Feeding feedings = new Feeding();
-            feedings.PetId = pet.Id;
-            feedings.When = DateTime.Now;
+            var deathDate = DateTime.Now;
+            if ((deathDate - pet.LastInteractedWithDate).TotalDays > 3)
+            {
+                pet.IsDead = true;
+                return Ok(new { Message = "Your pet is dead" });
 
-            pet.HappinessLevel += 3;
-            pet.HungerLevel -= 5;
+            }
+            else
+            {
+                pet.LastInteractedWithDate = DateTime.Now;
+                Feeding feedings = new Feeding();
+                feedings.PetId = pet.Id;
+                feedings.When = DateTime.Now;
 
-            _context.Feedings.Add(feedings);
-            await _context.SaveChangesAsync();
+                pet.HappinessLevel += 3;
+                pet.HungerLevel -= 5;
 
-            return Ok(feedings);
+                _context.Feedings.Add(feedings);
+                await _context.SaveChangesAsync();
+
+                return Ok(feedings);
+            }
+
         }
         [HttpPost("{id}/scoldings")]
         public async Task<ActionResult<Scolding>> ScoldingForPet(int id)
@@ -226,16 +251,27 @@ namespace TamagotchiAPI.Controllers
                 return NotFound();
             }
 
-            Scolding scoldings = new Scolding();
-            scoldings.PetId = pet.Id;
-            scoldings.When = DateTime.Now;
+            var deathDate = DateTime.Now;
+            if ((deathDate - pet.LastInteractedWithDate).TotalDays > 3)
+            {
+                pet.IsDead = true;
+                return Ok(new { Message = "Your pet is dead" });
+            }
+            else
+            {
+                pet.LastInteractedWithDate = DateTime.Now;
+                Scolding scoldings = new Scolding();
+                scoldings.PetId = pet.Id;
+                scoldings.When = DateTime.Now;
 
-            pet.HappinessLevel -= 5;
+                pet.HappinessLevel -= 5;
 
-            _context.Scoldings.Add(scoldings);
-            await _context.SaveChangesAsync();
+                _context.Scoldings.Add(scoldings);
+                await _context.SaveChangesAsync();
+                return Ok(scoldings);
+            }
 
-            return Ok(scoldings);
+
         }
 
     }
