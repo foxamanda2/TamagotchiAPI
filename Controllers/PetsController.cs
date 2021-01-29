@@ -44,8 +44,14 @@ namespace TamagotchiAPI.Controllers
         // URL. In the sample URL above it is the `5`.  The "{id}" in the [HttpGet("{id}")] is what tells dotnet
         // to grab the id from the URL. It is then made available to us as the `id` argument to the method.
         //
+        [HttpGet("alive")]
+        public async Task<ActionResult<IEnumerable<Pet>>> GetAlivePet()
+        {
+            return await _context.Pets.Where(alive => alive.IsDead == false).ToListAsync();
+        }
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pet>> GetPet(int id)
+        public async Task<ActionResult<Pet>> GetAlivePet(int id)
         {
             // Find the pet in the database using `FindAsync` to look it up by id
             var pet = await _context.Pets.FindAsync(id);
@@ -129,7 +135,7 @@ namespace TamagotchiAPI.Controllers
             pet.Birthday = DateTime.Now;
             pet.HappinessLevel = 0;
             pet.HungerLevel = 0;
-            pet.LastInteractedWithDate = DateTime.Today.AddDays(-4);
+            pet.LastInteractedWithDate = DateTime.Today;
             pet.IsDead = false;
 
 
