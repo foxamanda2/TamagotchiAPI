@@ -10,8 +10,8 @@ using TamagotchiAPI.Models;
 namespace TamagotchiAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210128194708_AddScoldings")]
-    partial class AddScoldings
+    [Migration("20210225181129_RecreateAllMyTables")]
+    partial class RecreateAllMyTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace TamagotchiAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.1");
 
-            modelBuilder.Entity("TamagotchiAPI.Models.Feedings", b =>
+            modelBuilder.Entity("TamagotchiAPI.Models.Feeding", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,15 +57,21 @@ namespace TamagotchiAPI.Migrations
                     b.Property<int>("HungerLevel")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsDead")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("LastInteractedWithDate")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Pet");
+                    b.ToTable("Pets");
                 });
 
-            modelBuilder.Entity("TamagotchiAPI.Models.Playtimes", b =>
+            modelBuilder.Entity("TamagotchiAPI.Models.Playtime", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -85,7 +91,7 @@ namespace TamagotchiAPI.Migrations
                     b.ToTable("Playtimes");
                 });
 
-            modelBuilder.Entity("TamagotchiAPI.Models.Scoldings", b =>
+            modelBuilder.Entity("TamagotchiAPI.Models.Scolding", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -105,37 +111,40 @@ namespace TamagotchiAPI.Migrations
                     b.ToTable("Scoldings");
                 });
 
-            modelBuilder.Entity("TamagotchiAPI.Models.Feedings", b =>
+            modelBuilder.Entity("TamagotchiAPI.Models.Feeding", b =>
                 {
-                    b.HasOne("TamagotchiAPI.Models.Pet", "Pet")
-                        .WithMany()
+                    b.HasOne("TamagotchiAPI.Models.Pet", null)
+                        .WithMany("Feedings")
                         .HasForeignKey("PetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Pet");
                 });
 
-            modelBuilder.Entity("TamagotchiAPI.Models.Playtimes", b =>
+            modelBuilder.Entity("TamagotchiAPI.Models.Playtime", b =>
                 {
-                    b.HasOne("TamagotchiAPI.Models.Pet", "Pet")
-                        .WithMany()
+                    b.HasOne("TamagotchiAPI.Models.Pet", null)
+                        .WithMany("Playtimes")
                         .HasForeignKey("PetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Pet");
                 });
 
-            modelBuilder.Entity("TamagotchiAPI.Models.Scoldings", b =>
+            modelBuilder.Entity("TamagotchiAPI.Models.Scolding", b =>
                 {
-                    b.HasOne("TamagotchiAPI.Models.Pet", "Pet")
-                        .WithMany()
+                    b.HasOne("TamagotchiAPI.Models.Pet", null)
+                        .WithMany("Scoldings")
                         .HasForeignKey("PetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.Navigation("Pet");
+            modelBuilder.Entity("TamagotchiAPI.Models.Pet", b =>
+                {
+                    b.Navigation("Feedings");
+
+                    b.Navigation("Playtimes");
+
+                    b.Navigation("Scoldings");
                 });
 #pragma warning restore 612, 618
         }
